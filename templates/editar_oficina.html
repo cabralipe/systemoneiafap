@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Oficina</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background:  linear-gradient(to right, rgba(0, 119, 182, 0.7), rgba(0, 119, 182, 0.6)), 
+            url('');
+            color: black;
+            font-family: 'Arial', sans-serif;
+        }
+  
+        .container {
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+  
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 20px;
+        }
+  
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+  
+        input:focus, select:focus {
+            background: rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+  
+        .btn-primary {
+            background-color: #0077b6;
+            border: none;
+            font-weight: bold;
+            padding: 12px;
+            width: 100%;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+  
+        .btn-primary:hover {
+            background-color: #023e8a;
+            transform: scale(1.05);
+        }
+  
+        .btn-warning {
+            background-color: #ffcc00;
+            color: black;
+            font-weight: bold;
+            padding: 12px;
+            width: 100%;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+  
+        .btn-warning:hover {
+            background-color: #ffbb00;
+            transform: scale(1.05);
+        }
+  
+        #add-horario {
+            background-color: #00b4d8;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            transition: 0.3s;
+            text-align: center;
+            cursor: pointer;
+        }
+  
+        #add-horario:hover {
+            background-color: #0096c7;
+            transform: scale(1.05);
+        }
+  
+        /* Ajusta o fundo do select e a cor do texto */
+  select {
+      background-color: white !important; /* Define fundo branco */
+      color: black !important; /* Define texto preto */
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 16px;
+  }
+  
+  /* Ajusta as opções dentro do select */
+  select option {
+      background-color: white; /* Fundo branco para opções */
+      color: black; /* Texto preto para melhor contraste */
+  }
+  
+  /* Adiciona efeito quando o usuário passa o mouse */
+  select option:hover {
+      background-color: #0077b6;
+      color: white;
+  }
+  
+      </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="text-center">Editar Oficina</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título da Oficina</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" value="{{ oficina.titulo }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição</label>
+                <textarea class="form-control" id="descricao" name="descricao" required>{{ oficina.descricao }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="ministrante" class="form-label">Ministrante</label>
+                <input type="text" class="form-control" id="ministrante" name="ministrante" value="{{ oficina.ministrante }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="vagas" class="form-label">Número de Vagas</label>
+                <input type="number" class="form-control" id="vagas" name="vagas" value="{{ oficina.vagas }}" min="0" required>
+            </div>
+            <div class="mb-3">
+                <label for="carga_horaria" class="form-label">Carga Horária (em horas)</label>
+                <input type="number" class="form-control" id="carga_horaria" name="carga_horaria" value="{{ oficina.carga_horaria }}" required>
+            </div>
+
+            <!-- Múltiplas Datas e Horários -->
+            <div id="datas-container">
+                <label>Datas e Horários:</label>
+                {% for dia in oficina.dias %}
+                <div class="data-item mb-3">
+                    <input type="date" name="data[]" class="form-control mb-2" value="{{ dia.data.strftime('%Y-%m-%d') }}" required>
+                    <input type="time" name="horario_inicio[]" class="form-control mb-2" value="{{ dia.horario_inicio }}" required>
+                    <input type="time" name="horario_fim[]" class="form-control mb-2" value="{{ dia.horario_fim }}" required>
+                    <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removerData(this)">Remover</button>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% for i in range(datas|length) %}
+            <div class="data-item mb-3">
+                <label>Data: {{ datas[i] }}</label>
+                <input type="text" name="palavra_chave_manha[]" class="form-control mb-2" value="{{ palavras_chave_manha[i] }}" placeholder="Palavra-chave manhã" required>
+                <input type="text" name="palavra_chave_tarde[]" class="form-control mb-2" value="{{ palavras_chave_tarde[i] }}" placeholder="Palavra-chave tarde" required>
+            </div>
+            {% endfor %}
+         
+
+
+            <label for="estado">Estado:</label>
+            <select name="estado" id="estado" required>
+                <option value="">Selecione um estado</option>
+                {% for sigla, nome in estados %}
+                    <option value="{{ sigla }}" {% if oficina.estado == sigla %} selected {% endif %}>{{ nome }}</option>
+                {% endfor %}
+            </select>
+        
+            <label for="cidade">Cidade:</label>
+            <select name="cidade" id="cidade" required>
+                <option value="{{ oficina.cidade }}">{{ oficina.cidade }}</option>
+            </select>
+
+            <a>. </a>
+
+            <button type="button" class="btn btn-info w-100 mb-3" onclick="adicionarData()">+ Adicionar Dia</button>
+            
+            <button type="submit" class="btn btn-success w-100">Salvar Alterações</button>
+        </form>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-danger w-100 mt-3">Cancelar</a>
+    </div>
+
+    <script>
+        document.getElementById("estado").addEventListener("change", function() {
+            var estado = this.value;
+            var cidadeSelect = document.getElementById("cidade");
+    
+            // Se nenhum estado for selecionado, limpa a lista de cidades
+            if (!estado) {
+                cidadeSelect.innerHTML = "<option value=''>Selecione um estado primeiro</option>";
+                return;
+            }
+    
+            cidadeSelect.innerHTML = "<option value=''>Carregando...</option>";
+    
+            fetch("/get_cidades/" + estado)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar cidades");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("📌 Cidades recebidas:", data);
+    
+                    cidadeSelect.innerHTML = "<option value=''>Selecione uma cidade</option>";
+                    
+                    data.forEach(cidade => {
+                        var option = document.createElement("option");
+                        option.value = cidade;
+                        option.textContent = cidade;
+                        cidadeSelect.appendChild(option);
+                    });
+    
+                    console.log("📌 Cidades adicionadas ao select:", cidadeSelect.innerHTML);
+                })
+                .catch(error => {
+                    console.error("Erro ao buscar cidades:", error);
+                    cidadeSelect.innerHTML = "<option value=''>Erro ao carregar cidades</option>";
+                });
+        });
+    
+        // Se a oficina já tem uma cidade, mantém a cidade selecionada ao carregar a página
+        document.addEventListener("DOMContentLoaded", function() {
+            var estadoAtual = document.getElementById("estado").value;
+            var cidadeAtual = "{{ oficina.cidade }}"; // Cidade já cadastrada na oficina
+    
+            if (estadoAtual) {
+                fetch("/get_cidades/" + estadoAtual)
+                    .then(response => response.json())
+                    .then(data => {
+                        var cidadeSelect = document.getElementById("cidade");
+                        cidadeSelect.innerHTML = "<option value=''>Selecione uma cidade</option>";
+    
+                        data.forEach(cidade => {
+                            var option = document.createElement("option");
+                            option.value = cidade;
+                            option.textContent = cidade;
+                            if (cidade === cidadeAtual) {
+                                option.selected = true; // Mantém a cidade já cadastrada
+                            }
+                            cidadeSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Erro ao carregar cidades iniciais:", error));
+            }
+        });
+
+        function adicionarData() {
+            // Container onde os campos de data serão adicionados
+            const container = document.getElementById("datas-container");
+
+            // Criar o elemento que irá conter os novos campos
+            const div = document.createElement("div");
+            div.className = "data-item mb-3";
+
+            // Adicionar os campos necessários
+            div.innerHTML = `
+                <input type="date" name="data[]" class="form-control mb-2" required>
+                <input type="time" name="horario_inicio[]" class="form-control mb-2" placeholder="Horário de Início" required>
+                <input type="time" name="horario_fim[]" class="form-control mb-2" placeholder="Horário de Fim" required>
+                <input type="text" name="palavra_chave_manha[]" class="form-control mb-2" placeholder="Palavra-chave Manhã" required>
+                <input type="text" name="palavra_chave_tarde[]" class="form-control mb-2" placeholder="Palavra-chave Tarde" required>
+                <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removerData(this)">Remover</button>
+            `;
+
+            // Adicionar o novo conjunto de campos ao container
+            container.appendChild(div);
+        }
+
+        function removerData(button) {
+            // Remove o elemento pai do botão (a div que contém os campos)
+            button.parentElement.remove();
+        }
+    </script>
+    
+            
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Oficinas - IAFAP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, rgba(0, 119, 182, 0.7), rgba(0, 119, 182, 0.6)), 
+                        url('');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+            max-width: fit-content;
+            margin: auto;
+        }
+
+        h1 {
+            font-weight: bold;
+        }
+
+        .btn-custom {
+            margin: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+            color: #ffffff;
+        }
+
+        .btn-warning:hover {
+            background-color: #d39e00;
+            color: #ffffff;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container text-center">
+        <h1>Sistema de Oficinas - IAFAP</h1>
+        <p>Isntituto Alagoano de Formação e Aperfeiçoamento Profissional.</p>
+
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-custom">Acesso Administrador</a>
+        <a href="{{ url_for('login') }}" class="btn btn-success btn-custom">Acesso Participante</a>
+        <a href="{{ url_for('cadastro_participante') }}" class="btn btn-warning btn-custom">Cadastro Participante</a>
+
+        <footer>&copy; 2025 Sistema de Oficinas - Desenvolvido por Fiber</footer>
+    </div>
+
+</body>
+</html>

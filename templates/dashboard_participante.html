@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Participante</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, rgba(0, 119, 182, 0.7), rgba(0, 119, 182, 0.6)), 
+                        url('');
+            color: black;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+            transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+            min-height: 320px;
+            color: black;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-inscrever {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-inscrever:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .btn-cancelar {
+            background-color: #dc3545;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancelar:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            width: 100%;
+            color: white;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        .card-header {
+            background-color: #6c5ce7;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 20px;
+            
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .oficina-horario {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .oficina-detalhes {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .oficina-status {
+            font-weight: bold;
+        }
+
+        .btn-checkin {
+            background-color: #f39c12;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-checkin:hover {
+            background-color: #e67e22;
+            transform: scale(1.05);
+        }
+
+        .btn-logout {
+            background-color: #ff4d4d;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <h3 class="text-white">Sistema de Oficinas</h3>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <div class="btn-container">
+                        <a href="{{ url_for('logout') }}" class="btn btn-logout">Sair</a>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container">
+        <h2 class="text-center mb-3">Bem-vindo(a), <b>{{ usuario.nome }}</b></h2>
+        <h3 class="text-center mb-3">Aqui estão as oficinas disponíveis para inscrição.</h3>
+
+        <div class="row">
+            {% set inscricoes_ids = usuario.inscricoes | map(attribute='oficina_id') | list %}
+            
+            {% for oficina in oficinas %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header text-white">
+                        {{ oficina.titulo }}
+                    </div>
+                    <div class="card-body">
+                        <p class="oficina-detalhes"><strong>Descrição:</strong> {{ oficina.descricao }}</p>
+                        <p class="oficina-detalhes"><strong>Ministrante:</strong> {{ oficina.ministrante }}</p>
+
+                        <p class="info"><strong>Datas e Horários:</strong></p>
+                        <ul class="list-unstyled">
+                            {% for dia in oficina.dias %}
+                                <li>📅 {{ dia.data.strftime('%d/%m/%Y') }} - ⏰ {{ dia.horario_inicio }} às {{ dia.horario_fim }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <p class="oficina-detalhes"><strong>Carga Horária:</strong> {{ oficina.carga_horaria }} horas</p>
+                        <p class="oficina-status">
+                            <strong>Vagas:</strong> {{ oficina.vagas }} 
+                            {% if oficina.vagas == 0 %}
+                                <span class="text-danger">(Esgotado)</span>
+                            {% endif %}
+                        </p>
+
+                        <div class="text-center d-flex flex-column align-items-center">
+                            {% if oficina.id in inscricoes_ids %}
+                                <div class="d-flex gap-2 w-100">
+                                    <form action="{{ url_for('remover_inscricao', oficina_id=oficina.id) }}" method="post">
+                                        <button type="submit" class="btn btn-danger w-100">Cancelar Inscrição</button>
+                                    </form>
+                                    
+                                    {% for inscricao in usuario.inscricoes %}
+                                        {% if inscricao.oficina.id == oficina.id %}
+                                            <a href="{{ url_for('baixar_comprovante', oficina_id=inscricao.oficina.id) }}" class="btn btn-primary w-100">
+                                                📄 Baixar Comprovante
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <a href="{{ url_for('checkin', oficina_id=oficina.id) }}" class="btn btn-checkin mt-2 w-100">Realizar Check-in</a>
+                            {% elif oficina.vagas > 0 %}
+                                <button onclick="inscrever('{{ oficina.id }}')" class="btn btn-success w-100">
+                                    Inscrever-se
+                                </button>
+                            {% else %}
+                                <span class="text-danger d-block text-center mt-2">Vagas esgotadas</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not oficinas %}
+            <p class="text-center text-warning mt-4">Nenhuma oficina disponível no momento.</p>
+        {% endif %}
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <p>&copy; 2025 Sistema de Oficinas - Desenvolvido com Fiber</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function inscrever(oficinaId) {
+            fetch(`/inscrever/${oficinaId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Inscrição realizada com sucesso!');
+                    location.reload();
+                    setTimeout(() => {
+                        window.location.href = data.pdf_url;
+                    }, 1000);
+                } else {
+                    alert('Ocorreu um erro na inscrição.');
+                }
+            })
+            .catch(error => console.error('Erro:', error));
+        }
+    </script>
+</body>
+</html>

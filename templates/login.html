@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Oficinas</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Cores inspiradas em Alagoas */
+        :root {
+            --azul-mar: #0077b6;
+            --verde-alagoas: #008000;
+            --vermelho-alagoas: #d90429;
+            --branco: #ffffff;
+        }
+
+        /* Fundo com imagem inspirada em Alagoas */
+        body {
+            background: linear-gradient(to right, rgba(0, 119, 182, 0.7), rgba(0, 119, 182, 0.6)), 
+                        url('');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Card de Login */
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Animação ao carregar */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Input estilizado */
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid var(--azul-mar);
+        }
+
+        .form-control:focus {
+            border-color: var(--verde-alagoas);
+            box-shadow: 0px 0px 10px rgba(0, 128, 0, 0.5);
+        }
+
+        /* Botão estilizado */
+        .btn-login {
+            background: var(--verde-alagoas);
+            color: var(--branco);
+            font-size: 1.1rem;
+            border-radius: 25px;
+            padding: 12px;
+            transition: all 0.4s ease-in-out;
+        }
+
+        .btn-login:hover {
+            background: var(--vermelho-alagoas);
+            transform: scale(1.05);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2 class="mb-4">Acesse o Sistema</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <input type="text" name="email" class="form-control" placeholder="E-mail" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" name="senha" class="form-control" placeholder="Senha" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Entrar</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Participante</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Estilo geral da página */
+        body {
+            background:  linear-gradient(to right, rgba(0, 119, 182, 0.7), rgba(0, 119, 182, 0.6)), 
+            url('');
+            color: black;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        /* Container central */
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            max-width: 500px;
+            width: 100%;
+            max-width: fit-content;
+            text-align: left;
+            animation: fadeIn 1.5s ease-in-out;
+            margin: auto;
+        }
+
+        /* Título */
+        h2 {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Estilo do formulário */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        /* Botões */
+        .btn-custom {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn-back {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+
+        .btn-back:hover {
+            background-color: #e0a800;
+        }
+
+        /* Estilização de alertas */
+        .alert-container {
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        footer {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+  
+        input:focus, select:focus {
+            background: rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="alert-container">
+            {% if alert %}
+                <div class="alert alert-{{ alert.category }} alert-dismissible fade show" role="alert">
+                    {{ alert.message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        </div>
+    
+
+        <h2>Cadastro de Participante</h2>
+        
+        <form method="POST">
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome" required>
+            </div>
+            <div class="mb-3">
+                <label for="cpf" class="form-label">CPF</label>
+                <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Digite seu e-mail" required>
+            </div>
+            <div class="mb-3">
+                <label for="senha" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="senha" name="senha" placeholder="Crie uma senha" required>
+            </div>
+            <div class="mb-3">
+                <label for="formacao" class="form-label">Formação</label>
+                <input type="text" class="form-control" id="formacao" name="formacao" placeholder="Ex: Ensino Médio, Graduação" required>
+            </div>
+            <button type="submit" class="btn btn-custom w-100">Cadastrar</button>
+            <a href="{{ url_for('home') }}" class="btn btn-back w-100">Voltar</a>
+        </form>
+        
+        <footer>&copy; 2025 Sistema de Oficinas - Desenvolvido com Fiber</footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
