@@ -872,6 +872,121 @@ def lista_checkins(oficina_id):
     )
 
 
+def gerar_relatorio_evento_pdf(total_usuarios, total_oficinas, total_inscricoes, total_checkins, dados_oficinas):
+    # Caminho do PDF
+    pdf_path = f"static/relatorios/relatorio_evento.pdf"
+    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+
+    # Configurações de estilo
+    styles = getSampleStyleSheet()
+    header_style = ParagraphStyle(
+        name="Header",
+        parent=styles["Heading1"],
+        alignment=1,  # Centralizado
+        fontSize=16,
+        spaceAfter=20,
+    )
+    subheader_style = ParagraphStyle(
+        name="SubHeader",
+        parent=styles["Heading2"],
+        fontSize=14,
+        spaceAfter=15,
+        textColor=colors.HexColor("#023E8A"),
+    )
+    normal_style = styles["Normal"]
+
+    # Gerar o PDF
+    doc = SimpleDocTemplate(pdf_path, pagesize=letter)
+    elementos = []
+
+    # Título
+    elementos.append(Paragraph("Relatório Geral do Evento", header_style))
+
+    # Resumo Geral
+    elementos.append(Paragraph("Resumo Geral", subheader_style))
+    resumo_data = [
+        ["Total de Usuários Registrados:", total_usuarios],
+        ["Total de Oficinas:", total_oficinas],
+        ["Total de Inscrições:", total_inscricoes],
+        ["Total de Check-ins:", total_checkins],
+    ]
+    resumo_tabela = Table(resumo_data, colWidths=[200, 100])
+    resumo_tabela.setStyle(TableStyle([
+        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+    ]))
+    elementos.append(resumo_tabela)
+    elementos.append(Spacer(1, 20))
+
+    # Detalhes por Oficina
+    elementos.append(Paragraph("Detalhes por Oficina", subheader_style))
+
+    tabela_data = [["Oficina", "Ministrante", "Inscrições", "Check-ins", "Taxa de Adesão"]]
+    for oficina in dados_oficinas:
+        tabela_data.append([
+            oficina["titulo"],
+            oficina["ministrante"],
+            oficina["inscricoes"],
+            oficina["checkins"],
+            oficina["taxa_adesao"],
+        ])
+
+    detalhes_tabela = Table(tabela_data, colWidths=[150, 100, 80, 80, 100])
+    detalhes_tabela.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elementos.append(detalhes_tabela)
+
+    # Construir o PDF
+    doc.build(elementos)
+
+    return pdf_path
+
+@app.route("/gerar_relatorio_evento")
+@login_required
+def gerar_relatorio_evento():
+    if current_user.tipo != "admin":
+        flash("Acesso negado!", "danger")
+        return redirect(url_for("dashboard"))
+
+    # Coleta de dados
+    total_usuarios = Usuario.query.count()
+    total_oficinas = Oficina.query.count()
+    total_inscricoes = Inscricao.query.count()
+    total_checkins = Checkin.query.count()
+
+    dados_oficinas = []
+    for oficina in Oficina.query.all():
+        inscricoes = Inscricao.query.filter_by(oficina_id=oficina.id).count()
+        checkins = Checkin.query.filter_by(oficina_id=oficina.id).count()
+        taxa_adesao = (checkins / inscricoes * 100) if inscricoes > 0 else 0
+
+        dados_oficinas.append({
+            "titulo": oficina.titulo,
+            "ministrante": oficina.ministrante,
+            "inscricoes": inscricoes,
+            "checkins": checkins,
+            "taxa_adesao": f"{taxa_adesao:.2f}%",
+        })
+
+    # Gerar o PDF
+    pdf_path = gerar_relatorio_evento_pdf(
+        total_usuarios,
+        total_oficinas,
+        total_inscricoes,
+        total_checkins,
+        dados_oficinas,
+    )
+
+    return send_file(pdf_path, as_attachment=True)
+
 @app.route('/gerar_pdf_checkins/<int:oficina_id>', methods=['GET'])
 @login_required
 def gerar_pdf_checkins(oficina_id):
